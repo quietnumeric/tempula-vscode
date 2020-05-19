@@ -11,11 +11,28 @@ import {
 import { MultiStepInput } from './MultiStepInput';
 
 const {
-  debug,
   toTemplatesDirectoryPath,
   forceLoadTemplates,
   createFile,
 } = require('./tempula-core');
+
+// なぜかcoreのdebugが動かない(呼び出せてないような)
+const doDebug = false;
+export const debug = (...obj: any[]) => {
+  if (doDebug) console.log(...obj);
+};
+
+const getFileSystemAbsolutePaths = (uri: Uri) => {
+  const rootPath = workspace.rootPath || '';
+  const outputDirectoryPath = uri.fsPath;
+  const templatesDirectoryPath: string = toTemplatesDirectoryPath(rootPath);
+
+  return {
+    rootPath,
+    outputDirectoryPath,
+    templatesDirectoryPath,
+  };
+};
 
 export async function runMultiStepInput(context: ExtensionContext, uri: Uri) {
   interface State {
@@ -33,9 +50,11 @@ export async function runMultiStepInput(context: ExtensionContext, uri: Uri) {
     return state as State;
   }
 
-  const rootPath = workspace.rootPath || '';
-  const outputDirectoryPath = uri.fsPath;
-  const templatesDirectoryPath: string = toTemplatesDirectoryPath(rootPath);
+  const {
+    rootPath,
+    outputDirectoryPath,
+    templatesDirectoryPath,
+  } = getFileSystemAbsolutePaths(uri);
   const templateFileNames: string[] = forceLoadTemplates(
     templatesDirectoryPath
   );
@@ -43,9 +62,6 @@ export async function runMultiStepInput(context: ExtensionContext, uri: Uri) {
   debug('tempula:', templatesDirectoryPath);
   debug('templateFileNames:', templateFileNames);
   debug('output:', outputDirectoryPath);
-
-  const toPathBelowRoot = (fullPath: string) =>
-    fullPath.replace(rootPath, '').replace(/^\//, '');
 
   const templateFilePickItems: QuickPickItem[] = templateFileNames.map(
     (label) => ({ label })
@@ -71,6 +87,14 @@ export async function runMultiStepInput(context: ExtensionContext, uri: Uri) {
     return (input: MultiStepInput) => inputNewFileName(input, state);
   }
 
+  const toPathBelowRoot = (fullPath: string) =>
+    fullPath.replace(rootPath, '').replace(/^\//, '');
+  const fileNamesToMessage = (
+    outputFilePath: string,
+    templateFileName: string
+  ) => `${toPathBelowRoot(outputFilePath)}<${templateFileName}>`;
+  const toMessage = (fileNameText: string, status: string) =>
+    `tempula: ${status} - ${fileNameText}`;
   const handleCreateResult = (
     state: Partial<State>,
     {
@@ -85,20 +109,18 @@ export async function runMultiStepInput(context: ExtensionContext, uri: Uri) {
       error?: { exists: boolean };
     }
   ) => {
-    const outputFilePathRelative = toPathBelowRoot(outputFilePath);
-    if (success) {
-      window.showInformationMessage(
-        `tempula: Created. ${outputFilePathRelative}<${state.pickedTemplateFileName}>`
+    const fileNameText = fileNamesToMessage(
+      outputFilePath,
+      state.pickedTemplateFileName || ''
+    );
+    if (success)
+      return window.showInformationMessage(toMessage(fileNameText, 'Created.'));
+    if (exception)
+      return window.showErrorMessage(toMessage(fileNameText, exception));
+    if (error?.exists)
+      return window.showErrorMessage(
+        toMessage(fileNameText, 'Already exists.')
       );
-    } else if (exception) {
-      window.showErrorMessage(
-        `tempula: ${exception} - ${outputFilePathRelative}<${state.pickedTemplateFileName}>`
-      );
-    } else if (error?.exists) {
-      window.showErrorMessage(
-        `tempula: Already exists. - ${outputFilePathRelative}<${state.pickedTemplateFileName}>`
-      );
-    }
   };
 
   async function inputNewFileName(
@@ -114,27 +136,22 @@ export async function runMultiStepInput(context: ExtensionContext, uri: Uri) {
       validate: validateNameIsUnique,
       shouldResume: shouldResume,
     });
-    handleCreateResult(
-      state,
-      createFile(
-        rootPath,
-        state.pickedTemplateFileName,
-        outputDirectoryPath,
-        state.inputFileName
-      )
+    const result = createFile(
+      rootPath,
+      state.pickedTemplateFileName,
+      outputDirectoryPath,
+      state.inputFileName
     );
+    handleCreateResult(state, result);
     return (input: MultiStepInput) => inputNewFileName(input, state);
   }
 
   function shouldResume() {
-    // Could show a notification with the option to resume.
     return new Promise<boolean>((resolve, reject) => {});
   }
 
   async function validateNameIsUnique(name: string) {
-    // ...validate...
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    return name === 'vscode' ? 'Name not unique' : undefined;
+    return undefined;
   }
 
   await collectInputs();
