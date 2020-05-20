@@ -59,9 +59,9 @@ export default {
 1. この tempula-vscode ディレクトリ内の `tempula-vscode-0.0.1.vsix` を任意のパスに配置
 1. VSCode拡張として、次のいずれかの方法でインストール
   - エディターGUIで[VSIXからのインストール](https://qiita.com/ss_tom_jp/items/5977e4f16d78b8ca7cc8)
-  - ターミナルでコマンドを実行
+  - ターミナルでコマンドを実行  
     `code --install-extension (配置ディレクトリからはファイル名、それ以外からはフルパス)tempula-vscode-0.0.1.vsix`  
-    codeコマンドを実行できない場合、[PATHにインストールしておく](https://qiita.com/ayatokura/items/69c96306e3dee501e19b)
+    `code`コマンドを実行できない場合、[PATHにインストールしておく](https://qiita.com/ayatokura/items/69c96306e3dee501e19b)
 - 一般公開はしない(するにはまだいろいろ足りない)
 
 ###### 準備
@@ -78,8 +78,8 @@ export default {
 ```
 - すっ飛ばしていきなり後述のとおり[実行](#実行)しても、必要ディレクトリと最小テンプレートファイルが生成される
 - 自作する場合
-1. プロジェクトルート直下に`.tempula`ディレクトリを作る
-1. `.tempula`ディレクトリ配下(サブディレクトリ不可)に、拡張子付き(html ファイルのテンプレートなら`.html`、vue ファイルのテンプレートなら`.vue`)でテンプレートファイルを配置
+  1. プロジェクトルート直下に`.tempula`ディレクトリを作る
+  1. `.tempula`ディレクトリ配下(サブディレクトリ不可)に、拡張子付き(html ファイルのテンプレートなら`.html`、vue ファイルのテンプレートなら`.vue`)でテンプレートファイルを配置
 - [汎用テンプレート集<tempula-templates-general>](../../../tempula-templates-general)も公開中
 
 
@@ -117,4 +117,4 @@ export default {
   - ケバブ・スネーク: 大文字を「記号＋小文字」に置換
     - 例) EMail → e-mail
     - 例) IAEA → i-a-e-a (プログラミング一般論として、この手のイニシャル集合体はそれ自体を 1 単語、例えば Iaea と扱う事が望ましい)
-
+- tempula-vscode内のソースコードを直接編集して`package`しようとしても、今は[tempula-core.js](src/tempula-core.js)については或る特殊なビルド手順を踏む必要があるのでそれを知らないと無理(トランスパイル結果をignoreしていないのもそれが理由)
