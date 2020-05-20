@@ -22,14 +22,14 @@
 			}
 		],
 		"menus": {
-		  "explorer/context": [
-			{
-			  "when": "explorerResourceIsFolder",
-			  "command": "tempula.new",
-			  "title": "New File by tempula",
-			  "group": "navigation@1"
-			}
-		  ]
+			"explorer/context": [
+				{
+					"when": "explorerResourceIsFolder",
+					"command": "tempula.new",
+					"title": "New File by tempula",
+					"group": "navigation@1"
+				}
+			]
 		}
 	},
 	"scripts": {
@@ -41,8 +41,9 @@
 	},
 	"devDependencies": {
 		"@types/node": "^12.12.0",
+		"@types/vscode": "^1.32.0",
 		"tslint": "^5.19.0",
 		"typescript": "^3.8.3",
-		"@types/vscode": "^1.32.0"
+		"vsce": "^1.75.0"
 	}
 }
