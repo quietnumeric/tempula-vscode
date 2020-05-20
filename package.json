@@ -1,49 +1,54 @@
 {
-	"name": "tempula-vscode",
-	"displayName": "tempula",
-	"description": "",
-	"version": "0.0.1",
-	"publisher": "kkk",
-	"engines": {
-		"vscode": "^1.32.0"
-	},
-	"categories": [
-		"Other"
-	],
-	"activationEvents": [
-		"onCommand:tempula.new"
-	],
-	"main": "./out/extension.js",
-	"contributes": {
-		"commands": [
-			{
-				"command": "tempula.new",
-				"title": "New File by tempula"
-			}
-		],
-		"menus": {
-			"explorer/context": [
-				{
-					"when": "explorerResourceIsFolder",
-					"command": "tempula.new",
-					"title": "New File by tempula",
-					"group": "navigation@1"
-				}
-			]
-		}
-	},
-	"scripts": {
-		"start": "yarn watch",
-		"vscode:prepublish": "npm run compile",
-		"compile": "tsc -p ./",
-		"lint": "tslint -p ./",
-		"watch": "tsc -watch -p ./"
-	},
-	"devDependencies": {
-		"@types/node": "^12.12.0",
-		"@types/vscode": "^1.32.0",
-		"tslint": "^5.19.0",
-		"typescript": "^3.8.3",
-		"vsce": "^1.75.0"
-	}
+  "name": "tempula-vscode",
+  "displayName": "tempula",
+  "description": "",
+  "version": "0.0.1",
+  "publisher": "kkk",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/quietnumeric/tempula-vscode.git"
+  },
+  "engines": {
+    "vscode": "^1.32.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:tempula.new"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "tempula.new",
+        "title": "New File by tempula"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "when": "explorerResourceIsFolder",
+          "command": "tempula.new",
+          "title": "New File by tempula",
+          "group": "navigation@1"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "start": "yarn watch",
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "lint": "tslint -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "yarn vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^12.12.0",
+    "@types/vscode": "^1.32.0",
+    "tslint": "^5.19.0",
+    "typescript": "^3.8.3",
+    "vsce": "^1.75.0"
+  }
 }
